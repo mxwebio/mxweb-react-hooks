@@ -2,7 +2,7 @@
 
 A collection of useful React hooks for building web applications.
 
-> **Note:** This initial release (v0.0.1, v0.0.2) was created to provide quick support for `@mxweb/viewport` package, particularly to address the iOS 26 viewport bug issue. The `useMediaQuery` and `useCombineRefs` hooks are essential utilities for handling viewport-related functionality across different devices and browsers.
+> **Note:** This initial release (v0.0.1, v0.0.2, v0.0.3) was created to provide quick support for `@mxweb/viewport` package, particularly to address the iOS 26 viewport bug issue. The `useMediaQuery` and `useCombineRefs` hooks are essential utilities for handling viewport-related functionality across different devices and browsers.
 
 ## Installation
 
@@ -15,6 +15,42 @@ pnpm add @mxweb/react-hooks
 ```
 
 ## Hooks
+
+### `useBreakpointValue`
+
+Returns a responsive value based on the current viewport breakpoint. Perfect for defining different values for different screen sizes.
+
+```tsx
+import { useBreakpointValue } from '@mxweb/react-hooks';
+
+function MyComponent() {
+  const width = useBreakpointValue({
+    "100%": "(max-width: 639px)",    // Mobile: full width
+    "500px": "(min-width: 640px)",   // Desktop: fixed width
+  });
+
+  return <div style={{ width }}>Responsive content</div>;
+}
+```
+
+**Advanced usage:**
+
+```tsx
+function ResponsiveGrid() {
+  const columns = useBreakpointValue({
+    "1": "(max-width: 639px)",
+    "2": "(min-width: 640px) and (max-width: 1023px)",
+    "4": "(min-width: 1024px)",
+  });
+
+  const gap = useBreakpointValue({
+    "8px": "(max-width: 639px)",
+    "16px": "(min-width: 640px)",
+  });
+
+  return <div style={{ display: 'grid', gap }}>Grid content</div>;
+}
+```
 
 ### `useCombineCallback`
 
