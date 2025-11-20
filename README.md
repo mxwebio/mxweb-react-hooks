@@ -2,7 +2,7 @@
 
 A collection of useful React hooks for building web applications.
 
-> **Note:** This initial release (v0.0.1) was created to provide quick support for `@mxweb/viewport` package, particularly to address the iOS 26 viewport bug issue. The `useMediaQuery` and `useCombineRefs` hooks are essential utilities for handling viewport-related functionality across different devices and browsers.
+> **Note:** This initial release (v0.0.1, v0.0.2) was created to provide quick support for `@mxweb/viewport` package, particularly to address the iOS 26 viewport bug issue. The `useMediaQuery` and `useCombineRefs` hooks are essential utilities for handling viewport-related functionality across different devices and browsers.
 
 ## Installation
 
@@ -15,6 +15,95 @@ pnpm add @mxweb/react-hooks
 ```
 
 ## Hooks
+
+### `useCombineCallback`
+
+Combines multiple callback functions into a single memoized callback that executes all of them in parallel. Useful for triggering multiple actions from a single event.
+
+```tsx
+import { useCombineCallback } from '@mxweb/react-hooks';
+
+function MyComponent({ onSave, onLog }) {
+  const handleSave = useCombineCallback(
+    onSave,
+    (data) => console.log('Saving:', data),
+    onLog
+  );
+
+  return <button onClick={() => handleSave({ id: 1 })}>Save</button>;
+}
+```
+
+### `combineCallback`
+
+A non-hook utility function that combines multiple callbacks into a single callback function.
+
+```tsx
+import { combineCallback } from '@mxweb/react-hooks';
+
+const onClick1 = () => console.log('Click 1');
+const onClick2 = () => console.log('Click 2');
+const combinedClick = combineCallback(onClick1, onClick2);
+
+<button onClick={combinedClick}>Click me</button>
+```
+
+### `useCombineEvents`
+
+Combines multiple event handler callbacks into a single memoized callback that executes them sequentially. Designed for DOM event handlers with async support and event propagation control.
+
+```tsx
+import { useCombineEvents } from '@mxweb/react-hooks';
+
+function MyComponent({ onClick, onAnalytics }) {
+  const handleClick = useCombineEvents(
+    onClick,
+    async (e) => {
+      await logEvent('button_clicked');
+    },
+    onAnalytics
+  );
+
+  return <button onClick={handleClick}>Click me</button>;
+}
+```
+
+**With event.preventDefault():**
+
+```tsx
+function Form() {
+  const handleSubmit = useCombineEvents(
+    (e) => {
+      if (!isValid) {
+        e.preventDefault(); // Stops subsequent handlers
+      }
+    },
+    async (e) => {
+      // This won't run if preventDefault was called
+      await submitForm(e);
+    }
+  );
+
+  return <form onSubmit={handleSubmit}>...</form>;
+}
+```
+
+### `combineEvents`
+
+A non-hook utility function that combines multiple event handlers with sequential execution.
+
+```tsx
+import { combineEvents } from '@mxweb/react-hooks';
+
+const handleClick1 = (e) => console.log('Handler 1');
+const handleClick2 = async (e) => {
+  await fetch('/api/log');
+  console.log('Handler 2');
+};
+
+const combinedHandler = combineEvents(handleClick1, handleClick2);
+<button onClick={combinedHandler}>Click me</button>
+```
 
 ### `useCombineRefs`
 
