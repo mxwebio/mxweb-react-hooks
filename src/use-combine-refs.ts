@@ -19,8 +19,11 @@ import { Ref, useMemo } from "react";
  *
  * <div ref={combinedRef}>Content</div>
  * ```
+ *
+ * @since 0.0.1
+ * @since 0.0.2 - Nullable and undefined refs are now supported
  */
-export function combineRefs<T>(...refs: Ref<T>[]) {
+export function combineRefs<T>(...refs: Array<Ref<T> | null | undefined>) {
   return (instance: T | null) => {
     refs.forEach((ref) => {
       if (typeof ref === "function") {
@@ -56,7 +59,8 @@ export function combineRefs<T>(...refs: Ref<T>[]) {
  * ```
  *
  * @since 0.0.1
+ * @since 0.0.2 - Nullable and undefined refs are now supported
  */
-export function useCombineRefs<T>(...refs: Ref<T>[]) {
+export function useCombineRefs<T>(...refs: Array<Ref<T> | null | undefined>) {
   return useMemo(() => combineRefs(...refs), [refs]);
 }
